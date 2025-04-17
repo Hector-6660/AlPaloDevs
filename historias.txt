@@ -1,0 +1,130 @@
+🔐 Epic 1: Autenticación y Gestión de Usuarios
+Historia 1.1 – Registro de usuario
+Como visitante
+Quiero registrarme con mi nombre, correo y contraseña
+Para poder acceder a funciones personalizadas como opinar o coleccionar juegos
+
+Historia 1.2 – Inicio de sesión
+Como usuario registrado
+Quiero iniciar sesión con mis credenciales
+Para acceder a mi cuenta y funcionalidades personalizadas
+
+Historia 1.3 – Cierre de sesión
+Como usuario autenticado
+Quiero cerrar sesión
+Para proteger mi cuenta al salir de la plataforma
+
+Historia 1.4 – Recuperar contraseña
+Como usuario
+Quiero poder recuperar mi contraseña si la olvido
+Para volver a acceder a mi cuenta fácilmente
+
+Historia 1.5 – Editar perfil
+Como usuario
+Quiero editar mis datos personales (nombre, email, etc.)
+Para mantener mi perfil actualizado
+
+🎮 Epic 2: Gestión y Visualización de Videojuegos
+Historia 2.1 – Ver listado de juegos
+Como usuario o visitante
+Quiero ver un listado de videojuegos disponibles
+Para descubrir qué títulos están registrados en la plataforma
+
+Historia 2.2 – Ver detalle de un juego
+Como usuario o visitante
+Quiero acceder a la página de un juego
+Para ver su descripción, opiniones y otros datos
+
+Historia 2.3 – Filtrar juegos por categoría
+Como usuario
+Quiero aplicar filtros como género, fecha o desarrollador
+Para encontrar juegos que me interesen más rápido
+
+Historia 2.4 – Añadir un nuevo juego (modo admin o equipo)
+Como desarrollador del equipo
+Quiero añadir juegos a la base de datos
+Para mostrar nuestros proyectos al público
+
+Historia 2.5 – Editar o eliminar juego (modo admin)
+Como administrador
+Quiero editar o borrar juegos
+Para mantener la información limpia y actualizada
+
+📚 Epic 3: Sistema de Opiniones/Reseñas
+Historia 3.1 – Escribir una opinión
+Como usuario autenticado
+Quiero dejar una opinión sobre un juego
+Para compartir mi experiencia con otros usuarios
+
+Historia 3.2 – Ver opiniones de un juego
+Como visitante o usuario
+Quiero ver las opiniones de otros sobre un juego
+Para decidir si me interesa probarlo
+
+Historia 3.3 – Calificar un juego
+Como usuario
+Quiero darle una puntuación al juego
+Para ayudar a otros a evaluar su calidad
+
+Historia 3.4 – Editar o eliminar mi opinión
+Como autor de una opinión
+Quiero poder editar o borrar mi reseña
+Para corregir errores o cambiar mi punto de vista
+
+🎒 Epic 4: Colección Personal de Juegos del Usuario
+Historia 4.1 – Añadir juego a mi colección
+Como usuario autenticado
+Quiero agregar juegos a mi colección personal
+Para llevar un control de los juegos que me gustan o tengo
+
+Historia 4.2 – Ver mi colección
+Como usuario autenticado
+Quiero ver todos los juegos de mi colección
+Para revisar y gestionarlos fácilmente
+
+Historia 4.3 – Quitar un juego de mi colección
+Como usuario
+Quiero eliminar juegos de mi colección
+Para mantenerla ordenada y actualizada
+
+🛠️ Epic 5: Panel de Administración (opcional, si hay roles)
+Historia 5.1 – Ver panel de administración
+Como administrador
+Quiero acceder a un panel de gestión
+Para ver el estado general de los juegos y opiniones
+
+Historia 5.2 – Modificar juegos desde el panel
+Como administrador
+Quiero editar la información de un juego desde el panel
+Para hacerlo más cómodo
+
+Historia 5.3 – Modificar o eliminar opiniones inapropiadas
+Como administrador
+Quiero revisar y moderar opiniones
+Para mantener un ambiente respetuoso en la plataforma
+
+Historia 5.4 – Ver estadísticas
+Como administrador
+Quiero ver datos como juegos más opinados o mejor puntuados
+Para entender el comportamiento de los usuarios
+
+🧭 Epic 6: Navegación y UX/UI
+Historia 6.1 – Ver menú de navegación dinámico
+Como usuario
+Quiero ver opciones según si estoy logueado o no
+Para navegar fácilmente por la plataforma
+
+Historia 6.2 – Acceder a mi perfil desde el menú
+Como usuario autenticado
+Quiero acceder a mi perfil y colección desde el menú
+Para gestionarlo rápidamente
+
+Historia 6.3 – Ver mensajes de éxito/error
+Como usuario
+Quiero recibir mensajes claros tras enviar formularios
+Para saber si mis acciones se completaron con éxito
+
+Historia 6.4 – Ver diseño responsive en móviles
+Como usuario
+Quiero que la página se adapte bien en mi celular
+Para poder usarla cómodamente desde cualquier lugar
