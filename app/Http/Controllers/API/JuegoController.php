@@ -26,10 +26,7 @@ class JuegoController extends Controller implements HasMiddleware
      */
     public function index(Request $request)
     {
-        $query =
-            $request->attributes->has('queryWithParameters') ?
-            $request->attributes->get('queryWithParameters') :
-            Juego::query();
+        $query = Juego::query(); // o algo similar
         return JuegoResource::collection($query->paginate($request->perPage));
     }
 
