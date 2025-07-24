@@ -2,7 +2,7 @@
 
 require __DIR__.'/juegos.php';
 
-use App\Http\Controllers\API\JuegoController;
+// use App\Http\Controllers\API\JuegoController;
 // use App\Http\Controllers\API\UsuarioController;
 // use App\Http\Controllers\API\OpinioneController;
 // use App\Http\Controllers\API\ColeccioneController;
@@ -27,7 +27,7 @@ Route::prefix('v1')->group(function () {
         ], 200);
     });
     Route::apiResource('usuarios', UsuariosController::class);
-    Route::apiResource('juegos', JuegoController::class);
+    Route::apiResource('juegos', JuegosController::class);
     Route::apiResource('opinions', OpinionesController::class);
     Route::apiResource('coleccions', ColeccionesController::class);
     Route::apiResource('franquicias', FranquiciasController::class);

@@ -23,7 +23,7 @@ class JuegosController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:50',
-            'descripcion' => 'required|string|max:255',
+            'descripcion' => 'required|string',
             'fecha_lanzamiento' => 'required|date',
             'plataforma' => 'required|string|max:50',
             'genero' => 'required|string|max:50',
