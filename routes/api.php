@@ -34,6 +34,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('personajes', PersonajesController::class);
 
     Route::get('franquicias/{franquicia}/personajes', [PersonajesController::class, 'personajesPorFranquicia']);
+    Route::get('juegos/{franquicia}/franquicia', [JuegosController::class, 'juegosPorFranquicia']);
 
     Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
         return $request->user();

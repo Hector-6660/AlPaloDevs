@@ -29,7 +29,7 @@ class JuegosController extends Controller
             'genero' => 'required|string|max:50',
             'autor' => 'required|string|max:50',
             'imagen' => 'nullable|image|mimes:jpg,jpeg|max:2048|dimensions:width=600,height=900',
-            'franquicia_nombre' => 'required|string|max:100',
+            'franquicia_id' => 'required|exists:franquicias,id',
         ]);
 
         $rutaImagen = null;
@@ -45,7 +45,7 @@ class JuegosController extends Controller
             'genero' => $request->input('genero'),
             'autor' => $request->input('autor'),
             'imagen' => $rutaImagen ? asset('storage/' . $rutaImagen) : null,
-            'franquicia_nombre' => $request->input('franquicia_nombre'),
+            'franquicia_id' => $request->input('franquicia_id'),
         ]);
 
         return response()->json([
@@ -105,5 +105,16 @@ class JuegosController extends Controller
         return response()->json([
             'message' => 'Juego eliminado exitosamente',
         ]);
+    }
+
+    public function juegosPorFranquicia($id)
+    {
+        $franquicia = \App\Models\Franquicia::where('id', $id)->first();
+
+        if (!$franquicia) {
+            return response()->json(['message' => 'Franquicia no encontrada'], 404);
+        }
+
+        return response()->json($franquicia->juegos);
     }
 }

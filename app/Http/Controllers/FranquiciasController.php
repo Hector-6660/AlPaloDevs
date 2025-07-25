@@ -16,7 +16,7 @@ class FranquiciasController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:100',
-            'descripcion' => 'nullable|string|max:255',
+            'descripcion' => 'nullable|string',
             'imagen' => 'required|image|mimes:jpg,jpeg|max:2048',
             'logo' => 'required|image|mimes:png|max:2048|dimensions:width=500,height=500',
         ]);

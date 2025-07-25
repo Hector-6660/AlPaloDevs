@@ -10,19 +10,18 @@ return new class extends Migration
     {
         Schema::table('juegos', function (Blueprint $table) {
             $table->string('imagen')->nullable()->after('autor');
-            $table->string('franquicia_nombre')->nullable()->after('imagen');
-
-            // $table->foreign('franquicia_nombre')->references('nombre')->on('franquicias')->onDelete('set null');
+            $table->unsignedBigInteger('franquicia_id');
+            $table->foreign('franquicia_id')->references('id')->on('franquicias')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
         Schema::table('juegos', function (Blueprint $table) {
-            $table->dropColumn('franquicia_nombre');
+            $table->dropColumn('franquicia_id');
             $table->dropColumn('imagen');
 
-            // $table->dropForeign(['franquicia_nombre']);
+            // $table->dropForeign(['franquicia_id']);
         });
     }
 };

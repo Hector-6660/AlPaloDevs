@@ -17,7 +17,7 @@ class Juego extends Model
         'genero',
         'autor',
         'imagen',
-        'franquicia_nombre',
+        'franquicia_id',
     ];
 
     public function colecciones() {
@@ -29,7 +29,7 @@ class Juego extends Model
     }
 
     public function franquicia() {
-        return $this->belongsTo('App\Models\Franquicia', 'franquicia_nombre', 'nombre');
+        return $this->belongsTo('App\Models\Franquicia');
     }
 
 }
