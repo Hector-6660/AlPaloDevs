@@ -66,6 +66,42 @@ class PersonajesTableSeeder extends Seeder
                 'imagen' => 'http://alpalodevs.test/storage/personajes/arthur_morgan.png',
                 'franquicia_id' => '9',
             ],
+            [
+                'nombre' => 'Zelda',
+                'descripcion' => 'La sabia princesa de Hyrule, portadora del poder de la Diosa y figura central en la saga.',
+                'imagen' => 'http://alpalodevs.test/storage/personajes/zelda.png',
+                'franquicia_id' => '1',
+            ],
+            [
+                'nombre' => 'Ganondorf',
+                'descripcion' => 'El principal antagonista de la saga, un poderoso hechicero y rey de los Gerudo.',
+                'imagen' => 'http://alpalodevs.test/storage/personajes/ganondorf.png',
+                'franquicia_id' => '1',
+            ],
+            [
+                'nombre' => 'Impa',
+                'descripcion' => 'Guardián leal de la familia real de Hyrule y protectora de la princesa Zelda.',
+                'imagen' => 'http://alpalodevs.test/storage/personajes/impa.png',
+                'franquicia_id' => '1',
+            ],
+            [
+                'nombre' => 'Skull Kid',
+                'descripcion' => 'Una criatura traviesa del Bosque Perdido, conocida por causar caos con la Máscara de Majora.',
+                'imagen' => 'http://alpalodevs.test/storage/personajes/skull_kid.png',
+                'franquicia_id' => '1',
+            ],
+            [
+                'nombre' => 'Demise',
+                'descripcion' => 'El ancestral demonio que representa la fuente original del mal en Hyrule.',
+                'imagen' => 'http://alpalodevs.test/storage/personajes/demise.png',
+                'franquicia_id' => '1',
+            ],
+            [
+                'nombre' => 'Fi',
+                'descripcion' => 'El espíritu de la Espada Maestra, guía leal de Link en su misión divina.',
+                'imagen' => 'http://alpalodevs.test/storage/personajes/fi.png',
+                'franquicia_id' => '1',
+            ],
         ];
 
         DB::table('personajes')->insert($personajes);

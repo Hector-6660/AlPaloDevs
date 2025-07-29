@@ -18,11 +18,21 @@ class PersonajesController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:100',
             'descripcion' => 'nullable|string',
-            'imagen' => 'nullable|url',
+            'imagen' => 'nullable|image|mimes:png|max:2048|dimensions:width=150,height=350',
             'franquicia_id' => 'required|exists:franquicias,id',
         ]);
 
-        $personaje = Personaje::create($request->all());
+        $rutaImagen = null;
+        if ($request->hasFile('imagen')) {
+            $rutaImagen = $request->file('imagen')->store('personajes', 'public');
+        }
+
+        $personaje = Personaje::create([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'imagen' => $rutaImagen ? asset('storage/' . $rutaImagen) : null,
+            'franquicia_id' => $request->franquicia_id,
+        ]);
 
         return response()->json([
             'message' => 'Personaje creado con éxito',
@@ -52,11 +62,16 @@ class PersonajesController extends Controller
         $request->validate([
             'nombre' => 'sometimes|required|string|max:100',
             'descripcion' => 'nullable|string',
-            'imagen' => 'nullable|url',
+            'imagen' => 'nullable|image|mimes:png|max:2048|dimensions:width=150,height=350',
             'franquicia_id' => 'sometimes|required|exists:franquicias,id',
         ]);
 
-        $personaje->update($request->all());
+        if ($request->hasFile('imagen')) {
+            $rutaImagen = $request->file('imagen')->store('personajes', 'public');
+            $personaje->imagen = asset('storage/' . $rutaImagen);
+        }
+
+        $personaje->update($request->except('imagen'));
 
         return response()->json([
             'message' => 'Personaje actualizado',
