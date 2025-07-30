@@ -25,10 +25,11 @@ class JuegosTableSeeder extends Seeder
                 'autor' => $juego['autor'],
                 'imagen' => $juego['imagen'],
                 'franquicia_id' => $juego['franquicia_id'],
+                'tiene_demo' => false,
             ]);
 
         }
-        $this->command->info('¡Tablas categorias_ediciones, patrocinadores y juegos inicializada con datos!');
+        $this->command->info('¡Tabla juegos inicializada con datos!');
     }
 
     private static $juegos = [
@@ -41,6 +42,7 @@ class JuegosTableSeeder extends Seeder
             'autor' => 'Nintendo',
             'imagen' => 'http://alpalodevs.test/storage/portadas/Donkey_Kong_Bananza.jpg',
             'franquicia_id' => '4',
+            'tiene_demo' => true,
         ],
         [
             'nombre' => 'The Legend Of Zelda: Tears of the Kingdom',
@@ -51,6 +53,7 @@ class JuegosTableSeeder extends Seeder
             'autor' => 'Nintendo',
             'imagen' => 'http://alpalodevs.test/storage/portadas/The_Legend_Of_Zelda_Tears_Of_The_Kingdom.jpg',
             'franquicia_id' => '1',
+            'tiene_demo' => false,
         ],
         [
             'nombre' => 'Persona 5',
@@ -61,6 +64,7 @@ class JuegosTableSeeder extends Seeder
             'autor' => 'Atlus',
             'imagen' => 'http://alpalodevs.test/storage/portadas/Persona_5.jpg',
             'franquicia_id' => '5',
+            'tiene_demo' => false,
         ],
         [
             'nombre' => 'Portal 2',
@@ -71,6 +75,7 @@ class JuegosTableSeeder extends Seeder
             'autor' => 'Valve',
             'imagen' => 'http://alpalodevs.test/storage/portadas/Portal_2.jpg',
             'franquicia_id' => '7',
+            'tiene_demo' => false,
         ],
         [
             'nombre' => 'Metal Gear Solid 2: Sons of Liberty',
@@ -81,6 +86,7 @@ class JuegosTableSeeder extends Seeder
             'autor' => 'Konami',
             'imagen' => 'http://alpalodevs.test/storage/portadas/Metal_Gear_Solid_2_Sons_Of_Liberty.jpg',
             'franquicia_id' => '3',
+            'tiene_demo' => false,
         ],
         [
             'nombre' => 'Red Dead Redemption 2',
@@ -91,6 +97,7 @@ class JuegosTableSeeder extends Seeder
             'autor' => 'Rockstar Games',
             'imagen' => 'http://alpalodevs.test/storage/portadas/Red_Dead_Redemption_2.jpg',
             'franquicia_id' => '9',
+            'tiene_demo' => false,
         ],
         [
             'nombre' => 'Super Smash Bros. Ultimate',
@@ -101,6 +108,7 @@ class JuegosTableSeeder extends Seeder
             'autor' => 'Nintendo',
             'imagen' => 'http://alpalodevs.test/storage/portadas/Super_Smash_Bros_Ultimate.jpg',
             'franquicia_id' => '8',
+            'tiene_demo' => false,
         ],
         [
             'nombre' => 'Super Mario Odyssey',
@@ -111,6 +119,7 @@ class JuegosTableSeeder extends Seeder
             'autor' => 'Nintendo',
             'imagen' => 'http://alpalodevs.test/storage/portadas/Super_Mario_Odyssey.jpg',
             'franquicia_id' => '2',
+            'tiene_demo' => false,
         ],
         [
             'nombre' => 'The Legend of Zelda: Ocarina of Time',
@@ -121,6 +130,7 @@ class JuegosTableSeeder extends Seeder
             'autor' => 'Nintendo',
             'imagen' => 'http://alpalodevs.test/storage/portadas/The_Legend_Of_Zelda_Ocarina_Of_Time.jpg',
             'franquicia_id' => '1',
+            'tiene_demo' => false,
         ],
         [
             'nombre' => 'DOOM Eternal',
@@ -131,6 +141,7 @@ class JuegosTableSeeder extends Seeder
             'autor' => 'id Software',
             'imagen' => 'http://alpalodevs.test/storage/portadas/Doom_Eternal.jpg',
             'franquicia_id' => '6',
+            'tiene_demo' => false,
         ],
     ];
 }

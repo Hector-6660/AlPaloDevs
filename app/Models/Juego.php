@@ -18,6 +18,7 @@ class Juego extends Model
         'autor',
         'imagen',
         'franquicia_id',
+        'tiene_demo',
     ];
 
     public function colecciones() {
@@ -32,4 +33,7 @@ class Juego extends Model
         return $this->belongsTo('App\Models\Franquicia');
     }
 
+    public function demo() {
+        return $this->hasOne('App\Models\Demo');
+    }
 }

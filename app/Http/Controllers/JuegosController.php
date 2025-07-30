@@ -16,7 +16,7 @@ class JuegosController extends Controller
 
     public function create()
     {
-        // Aquí puedes implementar la lógica para mostrar el formulario de creación de un nuevo juego
+
     }
 
     public function store(Request $request)
@@ -30,6 +30,7 @@ class JuegosController extends Controller
             'autor' => 'required|string|max:50',
             'imagen' => 'nullable|image|mimes:jpg,jpeg|max:2048|dimensions:width=600,height=900',
             'franquicia_id' => 'required|exists:franquicias,id',
+            'tiene_demo' => 'boolean',
         ]);
 
         $rutaImagen = null;
@@ -46,6 +47,7 @@ class JuegosController extends Controller
             'autor' => $request->input('autor'),
             'imagen' => $rutaImagen ? asset('storage/' . $rutaImagen) : null,
             'franquicia_id' => $request->input('franquicia_id'),
+            'tiene_demo' => false,
         ]);
 
         return response()->json([
@@ -69,7 +71,7 @@ class JuegosController extends Controller
 
     public function edit($id)
     {
-        // Aquí puedes implementar la lógica para mostrar el formulario de edición de un juego específico
+
     }
 
     public function update(Request $request, $id)
@@ -116,5 +118,20 @@ class JuegosController extends Controller
         }
 
         return response()->json($franquicia->juegos);
+    }
+
+    public function demoPorJuego($id)
+    {
+        $juego = \App\Models\Juego::with('demo')->find($id);
+
+        if (!$juego) {
+            return response()->json(['message' => 'Juego no encontrado'], 404);
+        }
+
+        if (!$juego->demo) {
+            return response()->json(['message' => 'Este juego no tiene demo.'], 404);
+        }
+
+        return response()->json($juego->demo);
     }
 }

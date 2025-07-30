@@ -8,6 +8,7 @@ require __DIR__.'/juegos.php';
 // use App\Http\Controllers\API\ColeccioneController;
 // use App\Http\Controllers\API\FranquiciaController;
 // use App\Http\Controllers\API\PersonajeController;
+// use App\Http\Controllers\API\DemoController;
 
 use App\Http\Controllers\JuegosController;
 use App\Http\Controllers\UsuariosController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\OpinionesController;
 use App\Http\Controllers\ColeccionesController;
 use App\Http\Controllers\FranquiciasController;
 use App\Http\Controllers\PersonajesController;
+use App\Http\Controllers\DemosController;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -32,9 +34,11 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('coleccions', ColeccionesController::class);
     Route::apiResource('franquicias', FranquiciasController::class);
     Route::apiResource('personajes', PersonajesController::class);
+    Route::apiResource('demos', DemosController::class);
 
     Route::get('franquicias/{franquicia}/personajes', [PersonajesController::class, 'personajesPorFranquicia']);
     Route::get('juegos/{franquicia}/franquicia', [JuegosController::class, 'juegosPorFranquicia']);
+    Route::get('juegos/{id}/demos', [JuegosController::class, 'demoPorJuego']);
 
     Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
         return $request->user();
