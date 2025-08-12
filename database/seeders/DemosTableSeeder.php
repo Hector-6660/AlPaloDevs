@@ -14,6 +14,7 @@ class DemosTableSeeder extends Seeder
         foreach (self::$demos as $demo) {
             DB::table('demos')->insert([
                 'nombre' => $demo['nombre'],
+                'imagen' => $demo['imagen'],
                 'mainScript' => $demo['mainScript'],
                 'juego_id' => $demo['juego_id'],
             ]);
@@ -25,6 +26,7 @@ class DemosTableSeeder extends Seeder
     private static $demos = [
         [
             'nombre' => 'Donkey Kong Bananza Demo',
+            'imagen' => 'http://alpalodevs.test/storage/demos/portadas/Donkey_Kong_Bananza_Demo.jpg',
             'mainScript' => 'http://alpalodevs.test/storage/demos/donkey-kong-bananza-demo/main.js',
             'juego_id' => 1,
         ],

@@ -21,6 +21,10 @@ class Juego extends Model
         'tiene_demo',
     ];
 
+    protected $casts = [
+        'tiene_demo' => 'boolean',
+    ];
+
     public function colecciones() {
         return $this->belongsToMany('App\Models\Coleccion');
     }

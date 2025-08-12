@@ -11,6 +11,7 @@ class Demo extends Model
 
     protected $fillable = [
         'nombre',
+        'imagen',
         'mainScript',
         'juego_id',
     ];

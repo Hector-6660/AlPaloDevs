@@ -38,6 +38,8 @@ class JuegosController extends Controller
             $rutaImagen = $request->file('imagen')->store('portadas', 'public');
         }
 
+        $tieneDemo = $request->boolean('tiene_demo', false);
+
         $juego = Juego::create([
             'nombre' => $request->input('nombre'),
             'descripcion' => $request->input('descripcion'),
@@ -47,7 +49,7 @@ class JuegosController extends Controller
             'autor' => $request->input('autor'),
             'imagen' => $rutaImagen ? asset('storage/' . $rutaImagen) : null,
             'franquicia_id' => $request->input('franquicia_id'),
-            'tiene_demo' => false,
+            'tiene_demo' => $tieneDemo,
         ]);
 
         return response()->json([
@@ -84,7 +86,19 @@ class JuegosController extends Controller
             ], 404);
         }
 
-        $juego->update($request->all());
+        $validated = $request->validate([
+            'nombre' => 'sometimes|string|max:50',
+            'descripcion' => 'sometimes|string',
+            'fecha_lanzamiento' => 'sometimes|date',
+            'plataforma' => 'sometimes|string|max:50',
+            'genero' => 'sometimes|string|max:50',
+            'autor' => 'sometimes|string|max:50',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg|max:2048|dimensions:width=600,height=900',
+            'franquicia_id' => 'sometimes|exists:franquicias,id',
+            'tiene_demo' => 'boolean',
+        ]);
+
+        $juego->update($validated);
 
         return response()->json([
             'message' => 'Juego actualizado exitosamente',

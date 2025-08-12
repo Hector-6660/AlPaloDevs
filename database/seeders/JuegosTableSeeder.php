@@ -24,8 +24,8 @@ class JuegosTableSeeder extends Seeder
                 'genero' => $juego['genero'],
                 'autor' => $juego['autor'],
                 'imagen' => $juego['imagen'],
-                'franquicia_id' => $juego['franquicia_id'],
-                'tiene_demo' => false,
+                'franquicia_id' => isset($juego['franquicia_id']) ? (int) $juego['franquicia_id'] : null,
+                'tiene_demo' => !empty($juego['tiene_demo']) ? 1 : 0,
             ]);
 
         }

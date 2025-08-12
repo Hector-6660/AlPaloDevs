@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('demos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre', 255);
+            $table->string('imagen')->nullable();
             $table->string('mainScript')->nullable();
             $table->unsignedBigInteger('juego_id')->unique();
 
