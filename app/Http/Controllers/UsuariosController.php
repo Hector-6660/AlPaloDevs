@@ -23,11 +23,18 @@ class UsuariosController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'nick' => 'required|string|max:255|unique:usuarios,nick',
+            'email' => 'required|email|unique:usuarios,email',
+            'password' => 'required|string|min:6'
+        ]);
+
         $usuario = Usuario::create([
-            'nombre' => $request->input('nombre'),
-            'nick' => $request->input('nick'),
-            'email' => $request->input('email'),
-            'password' => bcrypt($request->input('password')),
+            'nombre' => $request->nombre,
+            'nick' => $request->nick,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
             'rol' => 'usuario',
         ]);
 
@@ -60,12 +67,16 @@ class UsuariosController extends Controller
         $usuario = Usuario::find($id);
 
         if (!$usuario) {
-            return response()->json([
-                'message' => 'Usuario no encontrado',
-            ], 404);
+            return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
 
-        $usuario->update($request->only(['nombre', 'nick', 'email', 'password']));
+        $data = $request->only(['nombre', 'nick', 'email']);
+
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $usuario->update($data);
 
         return response()->json([
             'message' => 'Usuario actualizado exitosamente',

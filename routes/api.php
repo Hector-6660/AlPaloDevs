@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__.'/juegos.php';
+require __DIR__.'/usuarios.php';
 
 // use App\Http\Controllers\API\JuegoController;
 // use App\Http\Controllers\API\UsuarioController;

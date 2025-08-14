@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\UsuariosController;
 
 Route::group(['prefix' => 'usuarios'], function(){
-    Route::get('/', [UsuarioController::class, 'index']);
-    Route::get('/show/{id}', [UsuarioController::class, 'show']);
-    Route::post('/store', [UsuarioController::class, 'store']);
-    Route::put('/update/{id}', [UsuarioController::class, 'update']);
-    Route::delete('/destroy/{id}', [UsuarioController::class, 'destroy']);
+    Route::get('/', [UsuariosController::class, 'index']);
+    Route::get('/show/{id}', [UsuariosController::class, 'show']);
+    Route::post('/store', [UsuariosController::class, 'store']);
+    Route::put('/update/{id}', [UsuariosController::class, 'update']);
+    Route::delete('/destroy/{id}', [UsuariosController::class, 'destroy']);
 });

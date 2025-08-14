@@ -55,12 +55,6 @@ class PersonajesTableSeeder extends Seeder
                 'franquicia_id' => '7',
             ],
             [
-                'nombre' => 'Kirby',
-                'descripcion' => 'Uno de los luchadores destacados de Super Smash Bros.',
-                'imagen' => 'http://alpalodevs.test/storage/personajes/kirby.png',
-                'franquicia_id' => '8',
-            ],
-            [
                 'nombre' => 'Arthur Morgan',
                 'descripcion' => 'Forajido leal y protagonista de Red Dead Redemption 2.',
                 'imagen' => 'http://alpalodevs.test/storage/personajes/arthur_morgan.png',
@@ -101,6 +95,12 @@ class PersonajesTableSeeder extends Seeder
                 'descripcion' => 'El espíritu de la Espada Maestra, guía leal de Link en su misión divina.',
                 'imagen' => 'http://alpalodevs.test/storage/personajes/fi.png',
                 'franquicia_id' => '1',
+            ],
+            [
+                'nombre' => 'Master Hand',
+                'descripcion' => 'La mano maestra que controla el escenario en Super Smash Bros.',
+                'imagen' => 'http://alpalodevs.test/storage/personajes/master_hand.png',
+                'franquicia_id' => '8',
             ],
         ];
 
