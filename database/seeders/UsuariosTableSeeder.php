@@ -19,6 +19,7 @@ class UsuariosTableSeeder extends Seeder
                 'email' => $usuario['email'],
                 'password' => bcrypt($usuario['password']),
                 'rol' => $usuario['rol'],
+                'foto_perfil' => $usuario['foto_perfil'],
             ]);
         }
         $this->command->info('Tabla usuarios inicializada con datos!');

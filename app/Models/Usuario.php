@@ -12,6 +12,7 @@ class Usuario extends Model
         'email',
         'password',
         'rol',
+        'foto_perfil',
     ];
 
     public function opiniones() {

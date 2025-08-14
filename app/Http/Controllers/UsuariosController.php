@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 use function Laravel\Prompts\password;
 
@@ -30,12 +31,19 @@ class UsuariosController extends Controller
             'password' => 'required|string|min:6'
         ]);
 
+        // Ruta relativa en storage/app/public
+        $rutaRelativa = 'perfiles/fotoPredeterminada.jpg';
+
+        // URL pública
+        $fotoPerfilUrl = asset('storage/' . $rutaRelativa);
+
         $usuario = Usuario::create([
             'nombre' => $request->nombre,
             'nick' => $request->nick,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'rol' => 'usuario',
+            'foto_perfil' => $fotoPerfilUrl, // Guarda la URL completa
         ]);
 
         return response()->json([
@@ -74,6 +82,19 @@ class UsuariosController extends Controller
 
         if ($request->filled('password')) {
             $data['password'] = bcrypt($request->password);
+        }
+
+        if ($request->hasFile('foto_perfil')) {
+            $request->validate([
+                'foto_perfil' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
+            if ($usuario->foto_perfil && $usuario->foto_perfil !== 'perfiles/fotoPredeterminada.jpg') {
+                Storage::disk('public')->delete($usuario->foto_perfil);
+            }
+
+            $rutaImagen = $request->file('foto_perfil')->store('perfiles', 'public');
+            $data['foto_perfil'] = $rutaImagen;
         }
 
         $usuario->update($data);
