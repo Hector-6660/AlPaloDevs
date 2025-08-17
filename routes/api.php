@@ -41,6 +41,8 @@ Route::prefix('v1')->group(function () {
     Route::get('juegos/{franquicia}/franquicia', [JuegosController::class, 'juegosPorFranquicia']);
     Route::get('juegos/{id}/demos', [JuegosController::class, 'demoPorJuego']);
 
+    Route::post('/login', [UsuariosController::class, 'login']);
+
     Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
         return $request->user();
     });

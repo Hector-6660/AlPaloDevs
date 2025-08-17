@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use IlluminateSupport\Facades\Auth;
 
 use function Laravel\Prompts\password;
 
@@ -119,6 +121,27 @@ class UsuariosController extends Controller
 
         return response()->json([
             'message' => 'Usuario eliminado exitosamente',
+        ]);
+    }
+
+    // Autenticación de usuarios
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        $usuario = Usuario::where('email', $request->email)->first();
+
+        if (!$usuario || !Hash::check($request->password, $usuario->password)) {
+            return response()->json(['message' => 'Credenciales incorrectas'], 401);
+        }
+
+        return response()->json([
+            'message' => 'Inicio de sesión exitoso',
+            'usuario' => $usuario,
         ]);
     }
 }
