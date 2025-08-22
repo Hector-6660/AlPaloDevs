@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('opinions', function (Blueprint $table) {
             $table->id();
             $table->string('titulo', 100);
-            $table->string('contenido', 1000);
+            $table->text('contenido', 1000);
             $table->integer('puntuacion');
-            $table->date('fecha_creacion');
             $table->foreignId('usuario_id')->constrained('usuarios')->onDelete('cascade');
             $table->foreignId('juego_id')->constrained('juegos')->onDelete('cascade');
             $table->timestamps();

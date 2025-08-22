@@ -88,18 +88,24 @@ class UsuariosController extends Controller
 
         if ($request->hasFile('foto_perfil')) {
             $request->validate([
-                'foto_perfil' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                'foto_perfil' => 'image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:max_width=800,max_height=800',
             ]);
 
-            if ($usuario->foto_perfil && $usuario->foto_perfil !== 'perfiles/fotoPredeterminada.jpg') {
-                Storage::disk('public')->delete($usuario->foto_perfil);
+            // borrar la anterior si no es la predeterminada
+            if ($usuario->foto_perfil && !str_contains($usuario->foto_perfil, 'fotoPredeterminada.jpg')) {
+                $rutaAnterior = str_replace(asset('storage/'), '', $usuario->foto_perfil);
+                Storage::disk('public')->delete($rutaAnterior);
             }
 
+            // guardar la nueva en storage/app/public/perfiles
             $rutaImagen = $request->file('foto_perfil')->store('perfiles', 'public');
-            $data['foto_perfil'] = $rutaImagen;
+
+            // generar URL pública para React
+            $data['foto_perfil'] = asset('storage/' . $rutaImagen);
         }
 
         $usuario->update($data);
+        $usuario->refresh();
 
         return response()->json([
             'message' => 'Usuario actualizado exitosamente',

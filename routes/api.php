@@ -29,6 +29,9 @@ Route::prefix('v1')->group(function () {
             'count' => DB::table($tabla)->count()
         ], 200);
     });
+
+    Route::get('/opinions/buscar', [OpinionesController::class, 'buscarPorUsuarioYJuego']);
+
     Route::apiResource('usuarios', UsuariosController::class);
     Route::apiResource('juegos', JuegosController::class);
     Route::apiResource('opinions', OpinionesController::class);
@@ -40,6 +43,7 @@ Route::prefix('v1')->group(function () {
     Route::get('franquicias/{franquicia}/personajes', [PersonajesController::class, 'personajesPorFranquicia']);
     Route::get('juegos/{franquicia}/franquicia', [JuegosController::class, 'juegosPorFranquicia']);
     Route::get('juegos/{id}/demos', [JuegosController::class, 'demoPorJuego']);
+    Route::get('juegos/{id}/opinions', [OpinionesController::class, 'opinionsPorJuego']);
 
     Route::post('/login', [UsuariosController::class, 'login']);
 

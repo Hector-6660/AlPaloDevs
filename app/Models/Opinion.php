@@ -10,9 +10,12 @@ class Opinion extends Model
         'titulo',
         'contenido',
         'puntuacion',
-        'fecha_creacion',
         'usuario_id',
         'juego_id'
+    ];
+
+    protected $casts = [
+        'puntuacion' => 'integer',
     ];
 
     public function usuario() {

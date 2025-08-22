@@ -9,7 +9,7 @@ class OpinionesController extends Controller
 {
     public function index()
     {
-        $opinions = Opinion::all();
+        $opinions = Opinion::with(['usuario', 'juego'])->get();
 
         return response()->json($opinions);
     }
@@ -21,14 +21,23 @@ class OpinionesController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'titulo' => 'required|string|max:100',
+            'contenido' => 'required|string|max:1000',
+            'puntuacion' => 'required|integer|min:0|max:100',
+            'usuario_id' => 'required|exists:usuarios,id',
+            'juego_id' => 'required|exists:juegos,id',
+        ]);
+
         $opinion = Opinion::create([
             'titulo' => $request->input('titulo'),
             'contenido' => $request->input('contenido'),
             'puntuacion' => $request->input('puntuacion'),
-            'fecha_creacion' => $request->input('fecha_creacion'),
             'usuario_id' => $request->input('usuario_id'),
             'juego_id' => $request->input('juego_id'),
         ]);
+
+        $opinion->refresh();
 
         return response()->json([
             'message' => 'Opinion creado exitosamente',
@@ -56,6 +65,12 @@ class OpinionesController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'titulo' => 'required|string|max:100',
+            'contenido' => 'required|string|max:1000',
+            'puntuacion' => 'required|integer|min:0|max:100',
+        ]);
+
         $opinion = Opinion::find($id);
 
         if (!$opinion) {
@@ -64,7 +79,8 @@ class OpinionesController extends Controller
             ], 404);
         }
 
-        $opinion->update($request->only(['nombre', 'descripcion', 'fecha_creacion']));
+        $opinion->update($request->only(['titulo', 'contenido', 'puntuacion']));
+        $opinion->refresh();
 
         return response()->json([
             'message' => 'Opinion actualizado exitosamente',
@@ -87,5 +103,37 @@ class OpinionesController extends Controller
         return response()->json([
             'message' => 'Opinion eliminado exitosamente',
         ]);
+    }
+
+    public function buscarPorUsuarioYJuego(Request $request)
+    {
+        $usuarioId = $request->query('usuario_id');
+        $juegoId = $request->query('juego_id');
+
+        $opinion = Opinion::where('usuario_id', $usuarioId)
+                        ->where('juego_id', $juegoId)
+                        ->first();
+
+        if (!$opinion) {
+            return response()->json(null, 200);
+        }
+
+        return response()->json($opinion);
+    }
+
+    public function opinionsPorJuego($id)
+    {
+        $opinions = Opinion::where('juego_id', $id)
+            ->with('usuario')
+            ->get();
+
+        if ($opinions->isEmpty()) {
+            return response()->json([
+                'message' => 'No hay opiniones para este juego aún',
+                'opinions' => []
+            ], 200);
+        }
+
+        return response()->json($opinions);
     }
 }

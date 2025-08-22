@@ -20,7 +20,6 @@ class OpinionsTableSeeder extends Seeder
                 'titulo' => $opinion['titulo'],
                 'contenido' => $opinion['contenido'],
                 'puntuacion' => $opinion['puntuacion'],
-                'fecha_creacion' => $opinion['fecha_creacion'],
                 'usuario_id' => $opinion['usuario_id'],
                 'juego_id' => $opinion['juego_id'],
             ]);
