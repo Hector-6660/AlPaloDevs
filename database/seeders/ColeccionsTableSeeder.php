@@ -19,8 +19,8 @@ class ColeccionsTableSeeder extends Seeder
             DB::table('coleccions')->insert([
                 'nombre' => $coleccion['nombre'],
                 'descripcion' => $coleccion['descripcion'],
-                'fecha_creacion' => $coleccion['fecha_creacion'],
                 'usuario_id' => $coleccion['usuario_id'],
+                'imagen' => $coleccion['imagen'],
             ]);
         }
         $this->command->info('Tabla coleccions inicializada con datos!');

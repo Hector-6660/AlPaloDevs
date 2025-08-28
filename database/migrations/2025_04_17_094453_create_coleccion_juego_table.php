@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('coleccion_id')->constrained();
             $table->foreignId('juego_id')->constrained();
             $table->timestamps();
+
+            $table->unique(['coleccion_id', 'juego_id']);
         });
     }
 

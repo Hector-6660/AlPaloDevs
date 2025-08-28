@@ -30,8 +30,10 @@ Route::prefix('v1')->group(function () {
         ], 200);
     });
 
+    // Búsqueda de opinión por usuario y juego
     Route::get('/opinions/buscar', [OpinionesController::class, 'buscarPorUsuarioYJuego']);
 
+    // Rutas de la API
     Route::apiResource('usuarios', UsuariosController::class);
     Route::apiResource('juegos', JuegosController::class);
     Route::apiResource('opinions', OpinionesController::class);
@@ -40,11 +42,20 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('personajes', PersonajesController::class);
     Route::apiResource('demos', DemosController::class);
 
+    // Rutas adicionales
     Route::get('franquicias/{franquicia}/personajes', [PersonajesController::class, 'personajesPorFranquicia']);
     Route::get('juegos/{franquicia}/franquicia', [JuegosController::class, 'juegosPorFranquicia']);
     Route::get('juegos/{id}/demos', [JuegosController::class, 'demoPorJuego']);
     Route::get('juegos/{id}/opinions', [OpinionesController::class, 'opinionsPorJuego']);
 
+    // Colecciones de un usuario (con juegos)
+    Route::get('usuarios/{usuarioId}/colecciones', [ColeccionesController::class, 'coleccionesDeUsuario']);
+
+    // Añadir/quitar juegos
+    Route::post('coleccions/{coleccionId}/juegos/{juegoId}', [ColeccionesController::class, 'agregarJuego']);
+    Route::delete('coleccions/{coleccionId}/juegos/{juegoId}', [ColeccionesController::class, 'quitarJuego']);
+
+    // Login
     Route::post('/login', [UsuariosController::class, 'login']);
 
     Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {

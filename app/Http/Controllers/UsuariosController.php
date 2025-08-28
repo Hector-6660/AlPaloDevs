@@ -88,7 +88,7 @@ class UsuariosController extends Controller
 
         if ($request->hasFile('foto_perfil')) {
             $request->validate([
-                'foto_perfil' => 'image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:max_width=800,max_height=800',
+                'foto_perfil' => 'image|mimes:jpeg,png,jpg|max:2048|dimensions:max_width=800,max_height=800',
             ]);
 
             // borrar la anterior si no es la predeterminada

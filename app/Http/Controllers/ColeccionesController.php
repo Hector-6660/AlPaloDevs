@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Coleccion;
+use Illuminate\Support\Facades\Storage;
 
 class ColeccionesController extends Controller
 {
     public function index()
     {
-        $coleccions = Coleccion::all();
-
+        $coleccions = Coleccion::with('juegos')->get();
         return response()->json($coleccions);
     }
 
@@ -21,26 +21,38 @@ class ColeccionesController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nombre' => 'required|string|max:50',
+            'descripcion' => 'required|string|max:255',
+            'usuario_id' => 'required|exists:usuarios,id',
+        ]);
+
+        // Ruta relativa en storage/app/public
+        $rutaRelativa = 'colecciones/default.jpg';
+
+        // URL pública
+        $imagenColeccion = asset('storage/' . $rutaRelativa);
+
         $coleccion = Coleccion::create([
-            'nombre' => $request->input('nombre'),
-            'descripcion' => $request->input('descripcion'),
-            'fecha_creacion' => $request->input('fecha_creacion'),
-            'usuario_id' => $request->input('usuario_id'),
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'usuario_id' => $request->usuario_id,
+            'imagen' => $imagenColeccion, // Guarda la URL completa
         ]);
 
         return response()->json([
-            'message' => 'Coleccion creado exitosamente',
+            'message' => 'Coleccion creada exitosamente',
             'coleccion' => $coleccion,
         ], 201);
     }
 
     public function show($id)
     {
-        $coleccion = Coleccion::find($id);
+        $coleccion = Coleccion::with('juegos')->find($id);
 
         if (!$coleccion) {
             return response()->json([
-                'message' => 'Coleccion no encontrado',
+                'message' => 'Colección no encontrada',
             ], 404);
         }
 
@@ -57,15 +69,33 @@ class ColeccionesController extends Controller
         $coleccion = Coleccion::find($id);
 
         if (!$coleccion) {
-            return response()->json([
-                'message' => 'Coleccion no encontrado',
-            ], 404);
+            return response()->json(['message' => 'Coleccion no encontrada'], 404);
         }
 
-        $coleccion->update($request->only(['nombre', 'descripcion', 'fecha_creacion']));
+        $coleccion->update($request->only(['nombre', 'descripcion']));
+
+        if ($request->hasFile('imagen')) {
+            $request->validate([
+                'imagen' => 'image|mimes:jpeg,png,jpg|max:2048|dimensions:max_width=800,max_height=800',
+            ]);
+
+            // borrar la anterior si no es la predeterminada
+            if ($coleccion->imagen && !str_contains($coleccion->imagen, 'default.jpg')) {
+                $rutaAnterior = str_replace(asset('storage/'), '', $coleccion->imagen);
+                Storage::disk('public')->delete($rutaAnterior);
+            }
+
+            // guardar la nueva en storage/app/public/colecciones
+            $rutaImagen = $request->file('imagen')->store('colecciones', 'public');
+
+            // generar URL pública para React
+            $coleccion->imagen = asset('storage/' . $rutaImagen);
+        }
+
+        $coleccion->save();
 
         return response()->json([
-            'message' => 'Coleccion actualizado exitosamente',
+            'message' => 'Coleccion actualizada exitosamente',
             'coleccion' => $coleccion,
         ]);
     }
@@ -76,14 +106,57 @@ class ColeccionesController extends Controller
 
         if (!$coleccion) {
             return response()->json([
-                'message' => 'Coleccion no encontrado',
+                'message' => 'Coleccion no encontrada',
             ], 404);
         }
 
+        // Eliminar relaciones con juegos
+        $coleccion->juegos()->detach();
+
+        // Eliminar imagen si no es la default
+        if ($coleccion->imagen && !str_contains($coleccion->imagen, 'default.jpg')) {
+            $rutaAnterior = str_replace(asset('storage/'), '', $coleccion->imagen);
+            Storage::disk('public')->delete($rutaAnterior);
+        }
+
+        // Eliminar colección
         $coleccion->delete();
 
         return response()->json([
-            'message' => 'Coleccion eliminado exitosamente',
+            'message' => 'Coleccion eliminada exitosamente',
+        ]);
+    }
+
+    public function coleccionesDeUsuario($usuarioId)
+    {
+        $colecciones = Coleccion::with('juegos')
+            ->where('usuario_id', $usuarioId)
+            ->get();
+
+        return response()->json($colecciones);
+    }
+
+    // Añadir un juego a la colección
+    public function agregarJuego($coleccionId, $juegoId)
+    {
+        $coleccion = Coleccion::findOrFail($coleccionId);
+        $coleccion->juegos()->syncWithoutDetaching([$juegoId]);
+
+        return response()->json([
+            'message' => 'Juego añadido a la colección',
+            'coleccion' => $coleccion->load('juegos')
+        ]);
+    }
+
+    // Quitar un juego de la colección
+    public function quitarJuego($coleccionId, $juegoId)
+    {
+        $coleccion = Coleccion::findOrFail($coleccionId);
+        $coleccion->juegos()->detach($juegoId);
+
+        return response()->json([
+            'message' => 'Juego eliminado de la colección',
+            'coleccion' => $coleccion->load('juegos')
         ]);
     }
 }

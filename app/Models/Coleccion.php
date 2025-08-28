@@ -9,8 +9,8 @@ class Coleccion extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
-        'fecha_creacion',
-        'usuario_id'
+        'usuario_id',
+        'imagen',
     ];
 
     public function usuario() {
