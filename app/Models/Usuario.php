@@ -10,9 +10,12 @@ class Usuario extends Model
         'nombre',
         'nick',
         'email',
-        'password',
         'rol',
         'foto_perfil',
+    ];
+
+    protected $hidden = [
+        'password',
     ];
 
     public function opiniones() {

@@ -34,13 +34,21 @@ Route::prefix('v1')->group(function () {
     Route::get('/opinions/buscar', [OpinionesController::class, 'buscarPorUsuarioYJuego']);
 
     // Rutas de la API
+    Route::get('juegos', [JuegosController::class, 'index']);
+    Route::get('juegos/{id}', [JuegosController::class, 'show']);
+
+    Route::get('franquicias', [FranquiciasController::class, 'index']);
+    Route::get('franquicias/{id}', [FranquiciasController::class, 'show']);
+
+    Route::get('personajes', [PersonajesController::class, 'index']);
+    Route::get('personajes/{id}', [PersonajesController::class, 'show']);
+
+    Route::get('demos', [DemosController::class, 'index']);
+    Route::get('demos/{id}', [DemosController::class, 'show']);
+
     Route::apiResource('usuarios', UsuariosController::class);
-    Route::apiResource('juegos', JuegosController::class);
     Route::apiResource('opinions', OpinionesController::class);
     Route::apiResource('coleccions', ColeccionesController::class);
-    Route::apiResource('franquicias', FranquiciasController::class);
-    Route::apiResource('personajes', PersonajesController::class);
-    Route::apiResource('demos', DemosController::class);
 
     // Rutas adicionales
     Route::get('franquicias/{franquicia}/personajes', [PersonajesController::class, 'personajesPorFranquicia']);
@@ -57,6 +65,14 @@ Route::prefix('v1')->group(function () {
 
     // Login
     Route::post('/login', [UsuariosController::class, 'login']);
+
+    // Rutas privadas
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        Route::apiResource('juegos', JuegosController::class)->except(['index', 'show']);
+        Route::apiResource('franquicias', FranquiciasController::class)->except(['index', 'show']);
+        Route::apiResource('personajes', PersonajesController::class)->except(['index', 'show']);
+        Route::apiResource('demos', DemosController::class)->except(['index', 'show']);
+    });
 
     Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
         return $request->user();

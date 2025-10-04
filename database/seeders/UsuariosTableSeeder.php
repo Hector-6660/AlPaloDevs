@@ -25,5 +25,14 @@ class UsuariosTableSeeder extends Seeder
         $this->command->info('Tabla usuarios inicializada con datos!');
     }
 
-    private static $usuarios = [];
+    private static $usuarios = [
+        [
+            'nombre' => 'Al Palo Devs',
+            'nick' => 'alPaloDevs',
+            'email' => 'alpalodevs@gmail.com',
+            'password' => 'password',
+            'rol' => 'admin',
+            'foto_perfil' => 'http://alpalodevs.test/storage/perfiles/alpalodevs.jpg',
+        ],
+    ];
 }
