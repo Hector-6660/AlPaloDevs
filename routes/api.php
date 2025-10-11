@@ -34,8 +34,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/opinions/buscar', [OpinionesController::class, 'buscarPorUsuarioYJuego']);
 
     // Rutas de la API
-    Route::get('juegos', [JuegosController::class, 'index']);
-    Route::get('juegos/{id}', [JuegosController::class, 'show']);
+    Route::apiResource('juegos', JuegosController::class)->only(['index', 'show']);
 
     Route::get('franquicias', [FranquiciasController::class, 'index']);
     Route::get('franquicias/{id}', [FranquiciasController::class, 'show']);

@@ -145,8 +145,13 @@ class UsuariosController extends Controller
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
         }
 
+        // Crea un token personal para Sanctum
+        $token = $usuario->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'message' => 'Inicio de sesión exitoso',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
             'usuario' => $usuario,
         ]);
     }

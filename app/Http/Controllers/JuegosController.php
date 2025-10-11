@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Juego;
+use Illuminate\Support\Facades\Storage;
 
 class JuegosController extends Controller
 {
@@ -28,28 +29,27 @@ class JuegosController extends Controller
             'plataforma' => 'required|string|max:50',
             'genero' => 'required|string|max:50',
             'autor' => 'required|string|max:50',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg|max:2048|dimensions:width=600,height=900',
-            'franquicia_id' => 'required|exists:franquicias,id',
+            'imagen' => 'required|image|mimes:jpeg,png,jpg|max:2048|dimensions:max_width=600,max_height=900',
+            'franquicia_id' => 'nullable|integer',
             'tiene_demo' => 'boolean',
         ]);
 
-        $rutaImagen = null;
-        if ($request->hasFile('imagen')) {
-            $rutaImagen = $request->file('imagen')->store('portadas', 'public');
-        }
+        // Guardar imagen en storage/app/public/portadas
+        $rutaImagen = $request->file('imagen')->store('portadas', 'public');
 
-        $tieneDemo = $request->boolean('tiene_demo', false);
+        // Crear URL pública
+        $imagenUrl = asset('storage/' . $rutaImagen);
 
         $juego = Juego::create([
-            'nombre' => $request->input('nombre'),
-            'descripcion' => $request->input('descripcion'),
-            'fecha_lanzamiento' => $request->input('fecha_lanzamiento'),
-            'plataforma' => $request->input('plataforma'),
-            'genero' => $request->input('genero'),
-            'autor' => $request->input('autor'),
-            'imagen' => $rutaImagen ? asset('storage/' . $rutaImagen) : null,
-            'franquicia_id' => $request->input('franquicia_id'),
-            'tiene_demo' => $tieneDemo,
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'fecha_lanzamiento' => $request->fecha_lanzamiento,
+            'plataforma' => $request->plataforma,
+            'genero' => $request->genero,
+            'autor' => $request->autor,
+            'imagen' => $imagenUrl,
+            'franquicia_id' => $request->franquicia_id,
+            'tiene_demo' => $request->boolean('tiene_demo', false),
         ]);
 
         return response()->json([
@@ -81,24 +81,40 @@ class JuegosController extends Controller
         $juego = Juego::find($id);
 
         if (!$juego) {
-            return response()->json([
-                'message' => 'Juego no encontrado',
-            ], 404);
+            return response()->json(['message' => 'Juego no encontrado'], 404);
         }
 
-        $validated = $request->validate([
+        $request->validate([
             'nombre' => 'sometimes|string|max:50',
             'descripcion' => 'sometimes|string',
             'fecha_lanzamiento' => 'sometimes|date',
             'plataforma' => 'sometimes|string|max:50',
             'genero' => 'sometimes|string|max:50',
             'autor' => 'sometimes|string|max:50',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg|max:2048|dimensions:width=600,height=900',
-            'franquicia_id' => 'sometimes|exists:franquicias,id',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048|dimensions:max_width=600,max_height=900',
+            'franquicia_id' => 'nullable|integer',
             'tiene_demo' => 'boolean',
         ]);
 
-        $juego->update($validated);
+        $data = $request->only([
+            'nombre', 'descripcion', 'fecha_lanzamiento',
+            'plataforma', 'genero', 'autor', 'franquicia_id', 'tiene_demo'
+        ]);
+
+        // Si hay nueva imagen
+        if ($request->hasFile('imagen')) {
+            // borrar la anterior si existe
+            if ($juego->imagen && !str_contains($juego->imagen, 'default.jpg')) {
+                $rutaAnterior = str_replace(asset('storage/'), '', $juego->imagen);
+                Storage::disk('public')->delete($rutaAnterior);
+            }
+
+            // guardar nueva imagen
+            $rutaImagen = $request->file('imagen')->store('portadas', 'public');
+            $data['imagen'] = asset('storage/' . $rutaImagen);
+        }
+
+        $juego->update($data);
 
         return response()->json([
             'message' => 'Juego actualizado exitosamente',
@@ -111,16 +127,18 @@ class JuegosController extends Controller
         $juego = Juego::find($id);
 
         if (!$juego) {
-            return response()->json([
-                'message' => 'Juego no encontrado',
-            ], 404);
+            return response()->json(['message' => 'Juego no encontrado'], 404);
+        }
+
+        // Eliminar imagen si existe
+        if ($juego->imagen && !str_contains($juego->imagen, 'default.jpg')) {
+            $rutaAnterior = str_replace(asset('storage/'), '', $juego->imagen);
+            Storage::disk('public')->delete($rutaAnterior);
         }
 
         $juego->delete();
 
-        return response()->json([
-            'message' => 'Juego eliminado exitosamente',
-        ]);
+        return response()->json(['message' => 'Juego eliminado exitosamente']);
     }
 
     public function juegosPorFranquicia($id)
