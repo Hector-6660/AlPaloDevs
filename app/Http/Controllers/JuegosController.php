@@ -166,4 +166,15 @@ class JuegosController extends Controller
 
         return response()->json($juego->demo);
     }
+
+    public function ultimoJuego()
+    {
+        $juego = Juego::orderBy('id', 'desc')->first();
+
+        if (!$juego) {
+            return response()->json(['message' => 'No hay juegos aún'], 404);
+        }
+
+        return response()->json($juego);
+    }
 }
