@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Personaje;
 use App\Models\Franquicia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PersonajesController extends Controller
 {
@@ -66,7 +67,16 @@ class PersonajesController extends Controller
             'franquicia_id' => 'sometimes|required|exists:franquicias,id',
         ]);
 
+        // 🔁 Si se sube una nueva imagen, borramos la anterior
         if ($request->hasFile('imagen')) {
+            if ($personaje->imagen) {
+                $oldPath = parse_url($personaje->imagen, PHP_URL_PATH);
+                $oldPath = preg_replace('#^/storage/#', '', $oldPath);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
             $rutaImagen = $request->file('imagen')->store('personajes', 'public');
             $personaje->imagen = asset('storage/' . $rutaImagen);
         }
@@ -74,7 +84,7 @@ class PersonajesController extends Controller
         $personaje->update($request->except('imagen'));
 
         return response()->json([
-            'message' => 'Personaje actualizado',
+            'message' => 'Personaje actualizado con éxito',
             'personaje' => $personaje
         ]);
     }
@@ -87,9 +97,18 @@ class PersonajesController extends Controller
             return response()->json(['message' => 'Personaje no encontrado'], 404);
         }
 
+        // 🗑️ Eliminar imagen asociada
+        if ($personaje->imagen) {
+            $path = parse_url($personaje->imagen, PHP_URL_PATH);
+            $path = preg_replace('#^/storage/#', '', $path);
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
         $personaje->delete();
 
-        return response()->json(['message' => 'Personaje eliminado']);
+        return response()->json(['message' => 'Personaje eliminado con éxito']);
     }
 
     /**
