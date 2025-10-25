@@ -30,7 +30,7 @@ class JuegosController extends Controller
             'genero' => 'required|string|max:50',
             'autor' => 'required|string|max:50',
             'imagen' => 'required|image|mimes:jpeg,png,jpg|max:2048|dimensions:max_width=600,max_height=900',
-            'franquicia_id' => 'nullable|integer',
+            'franquicia_id' => 'sometimes|exists:franquicias,id',
             'tiene_demo' => 'boolean',
         ]);
 
@@ -92,7 +92,7 @@ class JuegosController extends Controller
             'genero' => 'sometimes|string|max:50',
             'autor' => 'sometimes|string|max:50',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048|dimensions:max_width=600,max_height=900',
-            'franquicia_id' => 'nullable|integer',
+            'franquicia_id' => 'sometimes|exists:franquicias,id',
             'tiene_demo' => 'boolean',
         ]);
 

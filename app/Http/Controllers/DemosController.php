@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Demo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DemosController extends Controller
 {
@@ -38,6 +39,18 @@ class DemosController extends Controller
             $extractPath = $storagePath . '/demos/' . $folderName;
             $zip->extractTo($extractPath);
             $zip->close();
+
+            // Si el ZIP tiene una única carpeta raíz, movemos su contenido un nivel arriba
+            $firstFolder = glob($extractPath . '/*', GLOB_ONLYDIR);
+            if (count($firstFolder) === 1) {
+                $innerFolder = $firstFolder[0];
+                foreach (glob($innerFolder . '/*') as $file) {
+                    $targetPath = $extractPath . '/' . basename($file);
+                    rename($file, $targetPath);
+                }
+                // Borramos la carpeta vacía
+                rmdir($innerFolder);
+            }
         } else {
             return response()->json(['message' => 'Error al descomprimir el archivo.'], 500);
         }
@@ -54,6 +67,9 @@ class DemosController extends Controller
         if ($juego) {
             $juego->update(['tiene_demo' => true]);
         }
+
+        // Eliminar el ZIP subido (ya descomprimido)
+        Storage::disk('public')->delete($zipPath);
 
         return response()->json([
             'message' => 'Demo creada correctamente.',
@@ -85,17 +101,32 @@ class DemosController extends Controller
             'imagen' => 'nullable|image|mimes:jpg,jpeg|max:2048|dimensions:width=600,height=900',
             'mainScript' => 'sometimes|required|string',
             'juego_id' => 'sometimes|required|exists:juegos,id|unique:demos,juego_id,' . $id,
-            'carpeta_demo' => 'nullable|file|mimes:zip',
+            'carpeta_demo' => 'nullable|file|mimes:zip', // solo para recibir el archivo ZIP
         ]);
 
         $oldJuegoId = $demo->juego_id;
 
+        // Actualizar imagen si se sube una nueva
         if ($request->hasFile('imagen')) {
+            // Borrar la anterior si existe
+            if ($demo->imagen) {
+                $oldImagePath = str_replace(asset('storage/'), '', $demo->imagen);
+                Storage::disk('public')->delete($oldImagePath);
+            }
+
             $rutaImagen = $request->file('imagen')->store('demos/portadas', 'public');
             $demo->imagen = asset('storage/' . $rutaImagen);
         }
 
+        // Si viene un nuevo ZIP, reemplazamos la carpeta vieja
         if ($request->hasFile('carpeta_demo')) {
+            // Borrar carpeta anterior si existe
+            if ($demo->mainScript) {
+                $oldFolder = basename(dirname(parse_url($demo->mainScript, PHP_URL_PATH)));
+                Storage::disk('public')->deleteDirectory('demos/' . $oldFolder);
+            }
+
+            // Subir y descomprimir ZIP nuevo
             $zipPath = $request->file('carpeta_demo')->store('demos_zips', 'public');
             $storagePath = storage_path('app/public');
             $zip = new \ZipArchive;
@@ -106,23 +137,40 @@ class DemosController extends Controller
                 $zip->extractTo($extractPath);
                 $zip->close();
 
-                if ($request->has('mainScript')) {
-                    $demo->mainScript = asset("storage/demos/{$folderName}/" . $request->mainScript);
+                // Si el ZIP tiene una única carpeta raíz, movemos su contenido un nivel arriba
+                $firstFolder = glob($extractPath . '/*', GLOB_ONLYDIR);
+                if (count($firstFolder) === 1) {
+                    $innerFolder = $firstFolder[0];
+                    foreach (glob($innerFolder . '/*') as $file) {
+                        $targetPath = $extractPath . '/' . basename($file);
+                        rename($file, $targetPath);
+                    }
+                    // Borramos la carpeta vacía
+                    rmdir($innerFolder);
                 }
+
+                // Establecer ruta pública del archivo indicado
+                $demo->mainScript = asset("storage/demos/{$folderName}/" . ($request->mainScript ?? 'main.js'));
             } else {
                 return response()->json(['message' => 'Error al descomprimir el archivo.'], 500);
             }
+
+            // Borrar el ZIP subido
+            Storage::disk('public')->delete($zipPath);
         }
 
-        $demo->update(collect($validated)->except(['carpeta_demo', 'mainScript'])->toArray());
+        // Actualizar los demás campos (sin carpeta_demo ni mainScript)
+        $demo->fill(collect($validated)->except(['carpeta_demo', 'mainScript', 'imagen'])->toArray());
+        $demo->save();
 
+        // Si solo cambió el nombre del mainScript (sin subir nuevo ZIP)
         if ($request->has('mainScript') && !isset($folderName)) {
             $folderName = basename(dirname(parse_url($demo->mainScript, PHP_URL_PATH)));
             $demo->mainScript = asset("storage/demos/{$folderName}/" . $request->mainScript);
             $demo->save();
         }
 
-        // Si cambió el juego_id, actualizamos el tiene_demo de ambos juegos
+        // Si cambió el juego asociado, actualizar banderas tiene_demo
         if ($request->filled('juego_id') && $oldJuegoId != $request->juego_id) {
             if ($oldJuego = \App\Models\Juego::find($oldJuegoId)) {
                 $oldJuego->update(['tiene_demo' => false]);
@@ -138,19 +186,25 @@ class DemosController extends Controller
     public function destroy($id)
     {
         $demo = Demo::find($id);
+        if (!$demo) return response()->json(['message' => 'Demo no encontrada'], 404);
 
-        if (!$demo) {
-            return response()->json(['message' => 'Demo no encontrada'], 404);
+        // Actualizar el juego relacionado
+        $juego = \App\Models\Juego::find($demo->juego_id);
+        if ($juego) $juego->update(['tiene_demo' => false]);
+
+        // Eliminar imagen y carpeta
+        if ($demo->imagen) {
+            $oldPath = str_replace(asset('storage/'), '', $demo->imagen);
+            Storage::disk('public')->delete($oldPath);
         }
 
-        // Actualiza el juego relacionado
-        $juego = \App\Models\Juego::find($demo->juego_id);
-        if ($juego) {
-            $juego->update(['tiene_demo' => false]);
+        if ($demo->mainScript) {
+            $folder = basename(dirname(parse_url($demo->mainScript, PHP_URL_PATH)));
+            Storage::disk('public')->deleteDirectory('demos/' . $folder);
         }
 
         $demo->delete();
 
-        return response()->json(['message' => 'Demo eliminada']);
+        return response()->json(['message' => 'Demo eliminada correctamente']);
     }
 }
