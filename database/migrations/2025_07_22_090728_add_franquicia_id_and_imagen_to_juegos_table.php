@@ -11,18 +11,24 @@ return new class extends Migration
         Schema::table('juegos', function (Blueprint $table) {
             $table->string('imagen')->nullable()->after('autor');
             $table->unsignedBigInteger('franquicia_id');
-            $table->foreign('franquicia_id')->references('id')->on('franquicias')->onDelete('cascade');
+
+            $table->foreign('franquicia_id')
+                  ->references('id')
+                  ->on('franquicias')
+                  ->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
         Schema::table('juegos', function (Blueprint $table) {
+            // Primero elimina la foreign key si existe
+            $table->dropForeign(['franquicia_id']);
+
             $table->dropColumn('franquicia_id');
             $table->dropColumn('imagen');
-
-            // $table->dropForeign(['franquicia_id']);
         });
     }
 };
+
 
