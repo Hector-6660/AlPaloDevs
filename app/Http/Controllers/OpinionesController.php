@@ -105,6 +105,7 @@ class OpinionesController extends Controller
         ]);
     }
 
+    // Buscar opinión por usuario y juego
     public function buscarPorUsuarioYJuego(Request $request)
     {
         $usuarioId = $request->query('usuario_id');
@@ -121,6 +122,7 @@ class OpinionesController extends Controller
         return response()->json($opinion);
     }
 
+    // Obtener opiniones de un juego específico
     public function opinionsPorJuego($id)
     {
         $opinions = Opinion::where('juego_id', $id)

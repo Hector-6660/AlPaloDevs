@@ -10,6 +10,7 @@ class ColeccionesController extends Controller
 {
     public function index()
     {
+        // Obtener todas las colecciones con sus juegos relacionados
         $coleccions = Coleccion::with('juegos')->get();
         return response()->json($coleccions);
     }
@@ -48,6 +49,7 @@ class ColeccionesController extends Controller
 
     public function show($id)
     {
+        // Obtener la colección con sus juegos relacionados
         $coleccion = Coleccion::with('juegos')->find($id);
 
         if (!$coleccion) {
@@ -72,8 +74,10 @@ class ColeccionesController extends Controller
             return response()->json(['message' => 'Coleccion no encontrada'], 404);
         }
 
+        // Validar los campos básicos
         $coleccion->update($request->only(['nombre', 'descripcion']));
 
+        // Validar y procesar la nueva imagen
         if ($request->hasFile('imagen')) {
             $request->validate([
                 'imagen' => 'image|mimes:jpeg,png,jpg|max:2048|dimensions:max_width=800,max_height=800',
@@ -127,8 +131,10 @@ class ColeccionesController extends Controller
         ]);
     }
 
+    // Obtener colecciones de un usuario específico
     public function coleccionesDeUsuario($usuarioId)
     {
+        // Obtener todas las colecciones de un usuario específico
         $colecciones = Coleccion::with('juegos')
             ->where('usuario_id', $usuarioId)
             ->get();

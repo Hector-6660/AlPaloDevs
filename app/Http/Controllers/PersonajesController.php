@@ -23,6 +23,7 @@ class PersonajesController extends Controller
             'franquicia_id' => 'required|exists:franquicias,id',
         ]);
 
+        // Guardar imagen si se proporciona en /storage/app/public/personajes
         $rutaImagen = null;
         if ($request->hasFile('imagen')) {
             $rutaImagen = $request->file('imagen')->store('personajes', 'public');
@@ -67,8 +68,9 @@ class PersonajesController extends Controller
             'franquicia_id' => 'sometimes|required|exists:franquicias,id',
         ]);
 
-        // 🔁 Si se sube una nueva imagen, borramos la anterior
+        // Si hay una nueva imagen
         if ($request->hasFile('imagen')) {
+            // Borrar la anterior si existe
             if ($personaje->imagen) {
                 $oldPath = parse_url($personaje->imagen, PHP_URL_PATH);
                 $oldPath = preg_replace('#^/storage/#', '', $oldPath);
@@ -77,6 +79,7 @@ class PersonajesController extends Controller
                 }
             }
 
+            // Guardar la nueva imagen
             $rutaImagen = $request->file('imagen')->store('personajes', 'public');
             $personaje->imagen = asset('storage/' . $rutaImagen);
         }
@@ -97,7 +100,7 @@ class PersonajesController extends Controller
             return response()->json(['message' => 'Personaje no encontrado'], 404);
         }
 
-        // 🗑️ Eliminar imagen asociada
+        // Eliminar imagen asociada
         if ($personaje->imagen) {
             $path = parse_url($personaje->imagen, PHP_URL_PATH);
             $path = preg_replace('#^/storage/#', '', $path);
@@ -111,11 +114,10 @@ class PersonajesController extends Controller
         return response()->json(['message' => 'Personaje eliminado con éxito']);
     }
 
-    /**
-     * Muestra todos los personajes de una franquicia específica.
-     */
+    // Muestra todos los personajes de una franquicia específica.
     public function personajesPorFranquicia($id)
     {
+        // Obtener franquicia por ID
         $franquicia = \App\Models\Franquicia::where('id', $id)->first();
 
         if (!$franquicia) {

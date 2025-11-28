@@ -141,8 +141,10 @@ class JuegosController extends Controller
         return response()->json(['message' => 'Juego eliminado exitosamente']);
     }
 
+    // Obtener juegos por franquicia
     public function juegosPorFranquicia($id)
     {
+        // Obtener franquicia por ID
         $franquicia = \App\Models\Franquicia::where('id', $id)->first();
 
         if (!$franquicia) {
@@ -152,8 +154,10 @@ class JuegosController extends Controller
         return response()->json($franquicia->juegos);
     }
 
+    // Obtener demo de un juego específico
     public function demoPorJuego($id)
     {
+        // Obtener demo por ID
         $juego = \App\Models\Juego::with('demo')->find($id);
 
         if (!$juego) {
@@ -167,6 +171,7 @@ class JuegosController extends Controller
         return response()->json($juego->demo);
     }
 
+    // Obtener último juego agregado
     public function ultimoJuego()
     {
         $juego = Juego::orderBy('id', 'desc')->first();

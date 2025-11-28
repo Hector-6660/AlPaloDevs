@@ -20,6 +20,7 @@ class Usuario extends Authenticatable
         'foto_perfil',
     ];
 
+    // Para ocultar los atributos en los JSON
     protected $hidden = [
         'password',
         'remember_token',

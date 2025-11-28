@@ -29,11 +29,12 @@ class DemosController extends Controller
             $rutaImagen = $request->file('imagen')->store('demos/portadas', 'public');
         }
 
-        // Subir y descomprimir ZIP
+        // Subir ZIP
         $zipPath = $request->file('carpeta_demo')->store('demos_zips', 'public');
         $storagePath = storage_path('app/public');
         $zip = new \ZipArchive;
 
+        // Descomprimir ZIP
         if ($zip->open($storagePath . '/' . $zipPath) === true) {
             $folderName = pathinfo($zipPath, PATHINFO_FILENAME);
             $extractPath = $storagePath . '/demos/' . $folderName;
@@ -101,7 +102,7 @@ class DemosController extends Controller
             'imagen' => 'nullable|image|mimes:jpg,jpeg|max:2048|dimensions:width=600,height=900',
             'mainScript' => 'sometimes|required|string',
             'juego_id' => 'sometimes|required|exists:juegos,id|unique:demos,juego_id,' . $id,
-            'carpeta_demo' => 'nullable|file|mimes:zip', // solo para recibir el archivo ZIP
+            'carpeta_demo' => 'nullable|file|mimes:zip',
         ]);
 
         $oldJuegoId = $demo->juego_id;
@@ -114,6 +115,7 @@ class DemosController extends Controller
                 Storage::disk('public')->delete($oldImagePath);
             }
 
+            // Guardar la nueva imagen
             $rutaImagen = $request->file('imagen')->store('demos/portadas', 'public');
             $demo->imagen = asset('storage/' . $rutaImagen);
         }
@@ -126,11 +128,12 @@ class DemosController extends Controller
                 Storage::disk('public')->deleteDirectory('demos/' . $oldFolder);
             }
 
-            // Subir y descomprimir ZIP nuevo
+            // Subir ZIP nuevo
             $zipPath = $request->file('carpeta_demo')->store('demos_zips', 'public');
             $storagePath = storage_path('app/public');
             $zip = new \ZipArchive;
 
+            // Descomprimir ZIP
             if ($zip->open($storagePath . '/' . $zipPath) === true) {
                 $folderName = pathinfo($zipPath, PATHINFO_FILENAME);
                 $extractPath = $storagePath . '/demos/' . $folderName;
@@ -192,12 +195,13 @@ class DemosController extends Controller
         $juego = \App\Models\Juego::find($demo->juego_id);
         if ($juego) $juego->update(['tiene_demo' => false]);
 
-        // Eliminar imagen y carpeta
+        // Eliminar imagen
         if ($demo->imagen) {
             $oldPath = str_replace(asset('storage/'), '', $demo->imagen);
             Storage::disk('public')->delete($oldPath);
         }
 
+        // Eliminar carpeta de la demo
         if ($demo->mainScript) {
             $folder = basename(dirname(parse_url($demo->mainScript, PHP_URL_PATH)));
             Storage::disk('public')->deleteDirectory('demos/' . $folder);

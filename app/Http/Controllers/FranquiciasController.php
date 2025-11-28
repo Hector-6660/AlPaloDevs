@@ -22,6 +22,7 @@ class FranquiciasController extends Controller
             'logo' => 'required|image|mimes:png|max:2048|dimensions:width=500,height=500',
         ]);
 
+        // Guardar imagen y logo en storage/app/public/franquicias y franquicias/logos
         $imagenRuta = $request->file('imagen')->store('franquicias', 'public');
         $logoRuta = $request->file('logo')->store('franquicias/logos', 'public');
 
@@ -75,12 +76,14 @@ class FranquiciasController extends Controller
                 }
             }
 
+            // Guardar la nueva imagen
             $rutaImagen = $request->file('imagen')->store('franquicias', 'public');
             $franquicia->imagen = asset('storage/' . $rutaImagen);
         }
 
         // Si suben nuevo logo: borrar el antiguo y guardar el nuevo
         if ($request->hasFile('logo')) {
+            // Borrar el anterior si existe
             if ($franquicia->logo) {
                 $oldLogoPath = parse_url($franquicia->logo, PHP_URL_PATH);
                 $oldLogoPath = preg_replace('#^/storage/#', '', $oldLogoPath);
@@ -89,6 +92,7 @@ class FranquiciasController extends Controller
                 }
             }
 
+            // Guardar el nuevo logo
             $rutaLogo = $request->file('logo')->store('franquicias/logos', 'public');
             $franquicia->logo = asset('storage/' . $rutaLogo);
         }

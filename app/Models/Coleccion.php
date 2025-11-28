@@ -19,6 +19,6 @@ class Coleccion extends Model
 
     public function juegos() {
         return $this->belongsToMany('App\Models\Juego');
-        // return $this->hasMany('App\Models\Juego');
+        // Como no tiene clave foránea directa, se usa belongsToMany
     }
 }

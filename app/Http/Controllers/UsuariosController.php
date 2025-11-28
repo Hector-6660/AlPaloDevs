@@ -80,27 +80,29 @@ class UsuariosController extends Controller
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
 
+        // Validar los datos entrantes
         $data = $request->only(['nombre', 'nick', 'email']);
 
         if ($request->filled('password')) {
             $data['password'] = bcrypt($request->password);
         }
 
+        // Si hay una nueva foto de perfil
         if ($request->hasFile('foto_perfil')) {
             $request->validate([
                 'foto_perfil' => 'image|mimes:jpeg,png,jpg|max:2048|dimensions:max_width=800,max_height=800',
             ]);
 
-            // borrar la anterior si no es la predeterminada
+            // Borrar la anterior si no es la predeterminada
             if ($usuario->foto_perfil && !str_contains($usuario->foto_perfil, 'fotoPredeterminada.jpg')) {
                 $rutaAnterior = str_replace(asset('storage/'), '', $usuario->foto_perfil);
                 Storage::disk('public')->delete($rutaAnterior);
             }
 
-            // guardar la nueva en storage/app/public/perfiles
+            // Guardar la nueva en storage/app/public/perfiles
             $rutaImagen = $request->file('foto_perfil')->store('perfiles', 'public');
 
-            // generar URL pública para React
+            // Generar URL pública para React
             $data['foto_perfil'] = asset('storage/' . $rutaImagen);
         }
 
@@ -131,7 +133,6 @@ class UsuariosController extends Controller
     }
 
     // Autenticación de usuarios
-
     public function login(Request $request)
     {
         $request->validate([
@@ -139,6 +140,7 @@ class UsuariosController extends Controller
             'password' => 'required|string',
         ]);
 
+        // Verificar credenciales
         $usuario = Usuario::where('email', $request->email)->first();
 
         if (!$usuario || !Hash::check($request->password, $usuario->password)) {
