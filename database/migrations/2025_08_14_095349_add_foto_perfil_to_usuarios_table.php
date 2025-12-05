@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('usuarios', function (Blueprint $table) {
-            $table->string('foto_perfil')->default('http://alpalodevs.test/storage/perfiles/fotoPredeterminada.jpg');
+            $table->string('foto_perfil')->default('http://alpalodevs.net/storage/perfiles/fotoPredeterminada.jpg');
         });
     }
 

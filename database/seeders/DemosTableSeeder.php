@@ -26,8 +26,8 @@ class DemosTableSeeder extends Seeder
     private static $demos = [
         [
             'nombre' => 'Donkey Kong Bananza Demo',
-            'imagen' => 'http://alpalodevs.test/storage/demos/portadas/Donkey_Kong_Bananza_Demo.jpg',
-            'mainScript' => 'http://alpalodevs.test/storage/demos/donkey-kong-bananza-demo/main.js',
+            'imagen' => 'http://alpalodevs.net/storage/demos/portadas/Donkey_Kong_Bananza_Demo.jpg',
+            'mainScript' => 'http://alpalodevs.net/storage/demos/donkey-kong-bananza-demo/main.js',
             'juego_id' => 1,
         ],
     ];

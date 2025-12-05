@@ -32,7 +32,7 @@ class UsuariosTableSeeder extends Seeder
             'email' => 'alpalodevs@gmail.com',
             'password' => 'password',
             'rol' => 'admin',
-            'foto_perfil' => 'http://alpalodevs.test/storage/perfiles/alpalodevs.jpg',
+            'foto_perfil' => 'http://alpalodevs.net/storage/perfiles/alpalodevs.jpg',
         ],
     ];
 }
