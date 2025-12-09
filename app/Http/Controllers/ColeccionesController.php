@@ -31,14 +31,11 @@ class ColeccionesController extends Controller
         // Ruta relativa en storage/app/public
         $rutaRelativa = 'colecciones/default.jpg';
 
-        // URL pública
-        $imagenColeccion = asset('storage/' . $rutaRelativa);
-
         $coleccion = Coleccion::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'usuario_id' => $request->usuario_id,
-            'imagen' => $imagenColeccion, // Guarda la URL completa
+            'imagen' => $rutaRelativa,
         ]);
 
         return response()->json([
@@ -85,15 +82,15 @@ class ColeccionesController extends Controller
 
             // borrar la anterior si no es la predeterminada
             if ($coleccion->imagen && !str_contains($coleccion->imagen, 'default.jpg')) {
-                $rutaAnterior = str_replace(asset('storage/'), '', $coleccion->imagen);
-                Storage::disk('public')->delete($rutaAnterior);
+                if ($coleccion->imagen !== 'colecciones/default.jpg') {
+                    Storage::disk('public')->delete($coleccion->imagen);
+                }
             }
 
             // guardar la nueva en storage/app/public/colecciones
             $rutaImagen = $request->file('imagen')->store('colecciones', 'public');
-
-            // generar URL pública para React
-            $coleccion->imagen = asset('storage/' . $rutaImagen);
+            // Guardar la ruta relativa en la base de datos
+            $coleccion->imagen = $rutaImagen;
         }
 
         $coleccion->save();

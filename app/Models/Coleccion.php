@@ -21,4 +21,9 @@ class Coleccion extends Model
         return $this->belongsToMany('App\Models\Juego');
         // Como no tiene clave foránea directa, se usa belongsToMany
     }
+
+    // Accesor para obtener la URL completa de la imagen
+    public function getImagenAttribute($value) {
+        return $value ? asset('storage/' . $value) : null;
+    }
 }
