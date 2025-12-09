@@ -13,6 +13,8 @@ class Coleccion extends Model
         'imagen',
     ];
 
+    protected $appends = ['imagen_url'];
+
     public function usuario() {
         return $this->belongsTo('App\Models\Usuario');
     }
@@ -23,7 +25,9 @@ class Coleccion extends Model
     }
 
     // Accesor para obtener la URL completa de la imagen
-    public function getImagenAttribute($value) {
-        return $value ? asset('storage/' . $value) : null;
+    public function getImagenUrlAttribute() {
+        return $this->imagen
+            ? asset('storage/' . $this->imagen)
+            : null;
     }
 }

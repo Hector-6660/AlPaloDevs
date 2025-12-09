@@ -30,12 +30,14 @@ class ColeccionesController extends Controller
 
         // Ruta relativa en storage/app/public
         $rutaRelativa = 'colecciones/default.jpg';
+        // Guardar la ruta relativa en la base de datos
+        $imagenColeccion = $rutaRelativa;
 
         $coleccion = Coleccion::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'usuario_id' => $request->usuario_id,
-            'imagen' => $rutaRelativa,
+            'imagen' => $imagenColeccion,
         ]);
 
         return response()->json([
@@ -65,8 +67,6 @@ class ColeccionesController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($request->all(), $request->file('imagen'));
-
         $coleccion = Coleccion::find($id);
 
         if (!$coleccion) {
@@ -118,8 +118,9 @@ class ColeccionesController extends Controller
 
         // Eliminar imagen si no es la default
         if ($coleccion->imagen && !str_contains($coleccion->imagen, 'default.jpg')) {
-            $rutaAnterior = str_replace(asset('storage/'), '', $coleccion->imagen);
-            Storage::disk('public')->delete($rutaAnterior);
+            if ($coleccion->imagen && $coleccion->imagen !== 'colecciones/default.jpg') {
+                Storage::disk('public')->delete($coleccion->imagen);
+            }
         }
 
         // Eliminar colección
