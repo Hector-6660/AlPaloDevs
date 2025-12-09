@@ -29,13 +29,16 @@ class ColeccionesController extends Controller
         ]);
 
         // Ruta relativa en storage/app/public
-        $rutaRelativa = 'https://alpalodevs.net/storage/colecciones/default.jpg';
+        $rutaRelativa = 'colecciones/default.jpg';
+
+        // URL pública
+        $imagenColeccion = asset('storage/' . $rutaRelativa);
 
         $coleccion = Coleccion::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'usuario_id' => $request->usuario_id,
-            'imagen' => $rutaRelativa,
+            'imagen' => $imagenColeccion, // Guarda la URL completa
         ]);
 
         return response()->json([
@@ -82,15 +85,15 @@ class ColeccionesController extends Controller
 
             // borrar la anterior si no es la predeterminada
             if ($coleccion->imagen && !str_contains($coleccion->imagen, 'default.jpg')) {
-                if ($coleccion->imagen !== 'colecciones/default.jpg') {
-                    Storage::disk('public')->delete($coleccion->imagen);
-                }
+                $rutaAnterior = str_replace(asset('storage/'), '', $coleccion->imagen);
+                Storage::disk('public')->delete($rutaAnterior);
             }
 
             // guardar la nueva en storage/app/public/colecciones
             $rutaImagen = $request->file('imagen')->store('colecciones', 'public');
-            // Guardar la ruta relativa en la base de datos
-            $coleccion->imagen = $rutaImagen;
+
+            // generar URL pública para React
+            $coleccion->imagen = asset('storage/' . $rutaImagen);
         }
 
         $coleccion->save();
@@ -116,9 +119,8 @@ class ColeccionesController extends Controller
 
         // Eliminar imagen si no es la default
         if ($coleccion->imagen && !str_contains($coleccion->imagen, 'default.jpg')) {
-            if ($coleccion->imagen && $coleccion->imagen !== 'colecciones/default.jpg') {
-                Storage::disk('public')->delete($coleccion->imagen);
-            }
+            $rutaAnterior = str_replace(asset('storage/'), '', $coleccion->imagen);
+            Storage::disk('public')->delete($rutaAnterior);
         }
 
         // Eliminar colección
