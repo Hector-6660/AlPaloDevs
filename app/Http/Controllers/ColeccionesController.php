@@ -29,15 +29,13 @@ class ColeccionesController extends Controller
         ]);
 
         // Ruta relativa en storage/app/public
-        $rutaRelativa = 'colecciones/default.jpg';
-        // Guardar la ruta relativa en la base de datos
-        $imagenColeccion = $rutaRelativa;
+        $rutaRelativa = 'https://alpalodevs.net/storage/colecciones/default.jpg';
 
         $coleccion = Coleccion::create([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'usuario_id' => $request->usuario_id,
-            'imagen' => $imagenColeccion,
+            'imagen' => $rutaRelativa,
         ]);
 
         return response()->json([
