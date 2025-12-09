@@ -65,6 +65,8 @@ class ColeccionesController extends Controller
 
     public function update(Request $request, $id)
     {
+        dd($request->all(), $request->file('imagen'));
+
         $coleccion = Coleccion::find($id);
 
         if (!$coleccion) {
