@@ -74,23 +74,35 @@ class ColeccionesController extends Controller
             return response()->json(['message' => 'Coleccion no encontrada'], 404);
         }
 
-        // Validar los campos básicos
-        $coleccion->update($request->only(['nombre', 'descripcion']));
+        // Validar campos básicos
+        $request->validate([
+            'nombre' => 'required|string|max:50',
+            'descripcion' => 'required|string|max:255',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048|dimensions:max_width=800,max_height=800',
+        ]);
 
-        // Validar y procesar la nueva imagen
-        if ($request->hasFile('imagen')) {
+        // Actualizar nombre y descripción
+        $coleccion->nombre = $request->nombre;
+        $coleccion->descripcion = $request->descripcion;
+
+        // Procesar imagen si se envió
+        if ($request->hasFile('imagen') && $request->file('imagen')->isValid()) {
             $file = $request->file('imagen');
 
-            if (!$file->isValid()) {
-                return response()->json(['message' => 'Archivo no válido'], 400);
+            // Borrar imagen anterior si no es la default
+            if ($coleccion->imagen && !str_contains($coleccion->imagen, 'default.jpg')) {
+                $rutaAnterior = str_replace(asset('storage/'), '', $coleccion->imagen);
+                Storage::disk('public')->delete($rutaAnterior);
             }
 
+            // Guardar nueva imagen en storage/app/public/colecciones
             $rutaImagen = $file->store('colecciones', 'public');
 
             if (!$rutaImagen) {
-                return response()->json(['message' => 'store() devolvió null'], 500);
+                return response()->json(['message' => 'No se pudo guardar la imagen'], 500);
             }
 
+            // Generar URL pública para React
             $coleccion->imagen = asset('storage/' . $rutaImagen);
         }
 
