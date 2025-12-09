@@ -79,20 +79,18 @@ class ColeccionesController extends Controller
 
         // Validar y procesar la nueva imagen
         if ($request->hasFile('imagen')) {
-            $request->validate([
-                'imagen' => 'image|mimes:jpeg,png,jpg|max:2048|dimensions:max_width=800,max_height=800',
-            ]);
+            $file = $request->file('imagen');
 
-            // borrar la anterior si no es la predeterminada
-            if ($coleccion->imagen && !str_contains($coleccion->imagen, 'default.jpg')) {
-                $rutaAnterior = str_replace(asset('storage/'), '', $coleccion->imagen);
-                Storage::disk('public')->delete($rutaAnterior);
+            if (!$file->isValid()) {
+                return response()->json(['message' => 'Archivo no válido'], 400);
             }
 
-            // guardar la nueva en storage/app/public/colecciones
-            $rutaImagen = $request->file('imagen')->store('colecciones', 'public');
+            $rutaImagen = $file->store('colecciones', 'public');
 
-            // generar URL pública para React
+            if (!$rutaImagen) {
+                return response()->json(['message' => 'store() devolvió null'], 500);
+            }
+
             $coleccion->imagen = asset('storage/' . $rutaImagen);
         }
 
