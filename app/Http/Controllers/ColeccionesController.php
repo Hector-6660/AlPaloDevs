@@ -88,6 +88,7 @@ class ColeccionesController extends Controller
         // Procesar imagen si se envió
         if ($request->hasFile('imagen') && $request->file('imagen')->isValid()) {
             $file = $request->file('imagen');
+            dd($file->store('colecciones', 'public'));
 
             // Borrar imagen anterior si no es la default
             if ($coleccion->imagen && !str_contains($coleccion->imagen, 'default.jpg')) {
